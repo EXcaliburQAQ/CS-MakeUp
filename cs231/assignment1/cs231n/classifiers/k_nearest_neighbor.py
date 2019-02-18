@@ -75,7 +75,7 @@ class KNearestNeighbor(object):
         # not use a loop over dimension.                                    #
         #####################################################################
         
-        dists[i][j] = sum(np.square((X[i] - self.X_train[j])))
+        dists[i][j] = np.sum(np.square((X[i] - self.X_train[j])))
         #print(i,j)
         pass
         #####################################################################
@@ -170,6 +170,7 @@ class KNearestNeighbor(object):
       # Store this label in y_pred[i]. Break ties by choosing the smaller     #
       # label.                                                                #
       #########################################################################
+      '''
       _dic = {}
       for i in range(k):
         if closest_y[i] not in _dic.keys():  # key:label  value:出现次数
@@ -180,7 +181,10 @@ class KNearestNeighbor(object):
       for item in _dic.keys():
         if _dic[item] == _max:
           y_pred[i] = item
-      print(closest_y,y_pred[i])
+      '''
+      count = np.bincount(closest_y) # 返回 各个值出现次数 长度为closet_y中最大值
+      y_pred[i] = np.argmax(count)  #argmax为最大值的索引。即出现最多次数的类别
+      #print(closest_y,y_pred[i])
       pass
       #########################################################################
       #                           END OF YOUR CODE                            # 

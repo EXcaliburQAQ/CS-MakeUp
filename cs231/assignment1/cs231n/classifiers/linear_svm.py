@@ -28,11 +28,12 @@ def svm_loss_naive(W, X, y, reg):
   loss = 0.0
   for i in xrange(num_train):
     scores = X[i].dot(W)
-    correct_class_score = scores[y[i]]
+    correct_class_score = scores[y[i]]#角标为y[i]的得分
     for j in xrange(num_classes):
-      if j == y[i]:
+      if j == y[i]:   #不计算本类别的loss
         continue
-      margin = scores[j] - correct_class_score + 1 # note delta = 1
+      margin = scores[j] - correct_class_score + 1 # note delta = 1 计算合页损失函数 
+                          #其他类别在该类上的分数减去正确分数 分数差小于-1则是0 否则按照公式算
       if margin > 0:
         loss += margin
 
@@ -41,7 +42,7 @@ def svm_loss_naive(W, X, y, reg):
   loss /= num_train
 
   # Add regularization to the loss.
-  loss += reg * np.sum(W * W)
+  loss += reg * np.sum(W * W)  # 直接对应元素相乘
 
   #############################################################################
   # TODO:                                                                     #

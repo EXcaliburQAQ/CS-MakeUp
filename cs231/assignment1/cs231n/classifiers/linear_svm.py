@@ -29,20 +29,25 @@ def svm_loss_naive(W, X, y, reg):
   for i in xrange(num_train):
     scores = X[i].dot(W)
     correct_class_score = scores[y[i]]#角标为y[i]的得分
-    for j in xrange(num_classes):
-      if j == y[i]:   #不计算本类别的loss
+    for j in xrange(num_classes): #计算样本在没有每一类的得分
+      if j == y[i]:   #不计算本类别的loss  此时是本类别数据
         continue
       margin = scores[j] - correct_class_score + 1 # note delta = 1 计算合页损失函数 
                           #其他类别在该类上的分数减去正确分数 分数差小于-1则是0 否则按照公式算
       if margin > 0:
         loss += margin
+        dW[:,y[i]] += -X[i] # 我觉得只更新一次就行了 X[i]更新权重 减了
+        dW[:,j] += X[i]
 
   # Right now the loss is a sum over all training examples, but we want it
   # to be an average instead so we divide by num_train.
   loss /= num_train
+  dW /= num_train  # dW同样求均值
 
   # Add regularization to the loss.
   loss += reg * np.sum(W * W)  # 直接对应元素相乘
+
+  dW += reg * W # 什么用处?
 
   #############################################################################
   # TODO:                                                                     #
@@ -66,11 +71,30 @@ def svm_loss_vectorized(W, X, y, reg):
   loss = 0.0
   dW = np.zeros(W.shape) # initialize the gradient as zero
 
+
+
   #############################################################################
   # TODO:                                                                     #
   # Implement a vectorized version of the structured SVM loss, storing the    #
   # result in loss.                                                           #
   #############################################################################
+
+  num_train = X.shape[0]
+  num_classes = W.shape[1]
+
+  scores = X.dot(W) # 500*10
+  correct_class_score = scores[np.arange(num_train),y] #500个
+  correct_class_score = np.reshape(np.repeat(correct_class_score,num_classes),(num_train,num_classes))
+
+  margin = scores - correct_class_score + 1.0
+  margin[np.arange(num_train),y] = 0 #每一正确的类margin归0
+
+  loss = (np.sum(margin[margin > 0]))/num_train
+  loss += reg*np.sum(W*W)  # 这里我没有×系数0.5
+
+
+
+
   pass
   #############################################################################
   #                             END OF YOUR CODE                              #
@@ -86,6 +110,16 @@ def svm_loss_vectorized(W, X, y, reg):
   # to reuse some of the intermediate values that you used to compute the     #
   # loss.                                                                     #
   #############################################################################
+  margin[margin>0] = 1
+  margin[margin<0] = 0
+
+  row_sum = np.sum(margin,axis=1) 
+
+  margin[np.arange(num_train),y] = -row_sum
+
+  dW += np.dot(X.T,margin)
+  dW /= num_train
+  dW += reg * W  #什么用处
   pass
   #############################################################################
   #                             END OF YOUR CODE                              #

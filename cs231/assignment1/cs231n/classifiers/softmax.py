@@ -75,7 +75,7 @@ def softmax_loss_vectorized(W, X, y, reg):
   # here, it is easy to run into numeric instability. Don't forget the        #
   # regularization!                                                           #
   #############################################################################
-  num_class = W.shape[0]
+  num_class = W.shape[1]
   num_train = X.shape[0]
   scores = X.dot(W)
   maxLogc = np.reshape(np.max(scores,axis=1),(num_train,1)) #计算maxLogc

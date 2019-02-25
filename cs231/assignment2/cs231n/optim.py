@@ -65,6 +65,10 @@ def sgd_momentum(w, dw, config=None):
     # TODO: Implement the momentum update formula. Store the updated value in #
     # the next_w variable. You should also use and update the velocity v.     #
     ###########################################################################
+    mu = config['momentum']
+    lr = config['learning_rate']
+    v = mu * v +(- lr * dw)
+    next_w = w + v
     pass
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -99,6 +103,13 @@ def rmsprop(x, dx, config=None):
     # in the next_x variable. Don't forget to update cache value stored in    #
     # config['cache'].                                                        #
     ###########################################################################
+    lr = config['learning_rate']
+    decay_rate = config['decay_rate']
+    eps = config['epsilon']
+    cahe = config['cache']
+    
+        
+
     pass
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -136,6 +147,28 @@ def adam(x, dx, config=None):
     # the next_x variable. Don't forget to update the m, v, and t variables   #
     # stored in config.                                                       #
     ###########################################################################
+    m = config['m']
+    v = config['v']
+    beta1 = config['beta1']
+    beta2 = config['beta2']
+    eps = config['epsilon']
+    lr = config['learning_rate']
+    t = config['t']
+
+    t += 1
+    m = beta1 * m + (1 - beta1) * dx
+    v = beta2 * v + (1 - beta2) * (dx**2)
+
+
+    m_hat = m/(1 - beta1**t)  #做偏离矫正
+    v_hat = v/(1 - beta2**t)
+
+    next_x = x -(lr * m_hat/(np.sqrt(v_hat) + eps))
+    
+    
+    config['m'] = m
+    config['v'] = v
+    config['t'] = t
     pass
     ###########################################################################
     #                             END OF YOUR CODE                            #

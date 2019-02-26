@@ -168,6 +168,7 @@ def adam(x, dx, config=None):
 
     m_hat = m/(1 - beta1**t)  #做偏离矫正
     v_hat = v/(1 - beta2**t)
+    
 
     next_x = x -(lr * m_hat/(np.sqrt(v_hat) + eps))
     

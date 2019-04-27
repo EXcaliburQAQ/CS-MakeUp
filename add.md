@@ -1,3 +1,9 @@
+'''
+
+这样写不是很规范啊！！！
+
+'''
+
 ### SICP
 - 1 test funtion
 ``` python {.line-numbers}
@@ -23,5 +29,7 @@ def gcd(m,n):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+
 
 ```
